@@ -81,8 +81,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlobUtils.cs" />
-    <Compile Include="CourseCoordinate.cs" />
-    <Compile Include="CourseDetails.cs" />
+    <Compile Include="EdgeCourseCoordinates.cs" />
+    <Compile Include="LineCourseCoordinate.cs" />
+    <Compile Include="CourseDataCSV.cs" />
     <Compile Include="CourseInfo.cs" />
     <Compile Include="Feature.cs" />
     <Compile Include="Geometry.cs" />
