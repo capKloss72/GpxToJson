@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Trackervonfig.Props
 {
-    class RiderDataCSV : IEventData
+    class RiderDataCSV : ICSVEventData
     {
         public string RiderId { get; set; }
         public string Name { get; set; }

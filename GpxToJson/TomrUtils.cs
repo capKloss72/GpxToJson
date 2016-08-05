@@ -14,7 +14,7 @@ namespace Trackervonfig.Utilities
 {
     static class TomrUtils
     {
-        public static bool InsertRider(IEventData riderdata)
+        public static bool InsertRider(ICSVEventData riderdata)
         {
 
             string riderId = null;
@@ -59,7 +59,7 @@ namespace Trackervonfig.Utilities
             }
         }
 
-        public static bool UpdateRider(IEventData rd)
+        public static bool UpdateRider(ICSVEventData rd)
         {
             using (var connection = new C.SqlConnection(GetConnectionStringByName("tomr-sql")))
             {
@@ -100,7 +100,7 @@ namespace Trackervonfig.Utilities
             }
         }
 
-        private static bool InsertRace(IEventData rd)
+        private static bool InsertRace(ICSVEventData rd)
         {
             using (var connection = new C.SqlConnection(GetConnectionStringByName("tomr-sql")))
             {
@@ -137,40 +137,8 @@ namespace Trackervonfig.Utilities
             }
         }
 
-        //private static void UpdateRace3(RaceDataCSV racedata)
-        //{
-        //    using (var connection = new C.SqlConnection(GetConnectionStringByName("tomr-sql")))
-        //    {
-        //        connection.Open();
-        //        C.SqlParameter parameter;
 
-        //        using (var command = new C.SqlCommand())
-        //        {
-        //            command.Connection = connection;
-        //            command.CommandType = D.CommandType.Text;
-        //            command.CommandText = @"update dbo.RaceDetails
-        //                                        set RaceId = @RaceId, RaceName = @RaceName, IsCurrent = @IsCurrent
-        //                                            where RaceId = @RaceId";
-
-        //            parameter = new C.SqlParameter("@RaceId", D.SqlDbType.NVarChar, 50);
-        //            parameter.Value = racedata.RaceId;
-        //            command.Parameters.Add(parameter);
-
-        //            parameter = new C.SqlParameter("@RaceName", D.SqlDbType.NVarChar, 255);
-        //            parameter.Value = racedata.RaceName;
-        //            command.Parameters.Add(parameter);
-
-        //            parameter = new C.SqlParameter("@IsCurrent", D.SqlDbType.Int);
-        //            parameter.Value = racedata.IsCurrent;
-        //            command.Parameters.Add(parameter);
-
-        //            string raceId = (string)command.ExecuteScalar();
-        //            Console.WriteLine($"The updated RaceId is = {raceId}.");
-        //        }
-        //    }
-        //}
-
-        private static bool UpdateRace(IEventData rd)
+        private static bool UpdateRace(ICSVEventData rd)
         {
             using (var connection = new C.SqlConnection(GetConnectionStringByName("tomr-sql")))
             {
@@ -249,131 +217,14 @@ namespace Trackervonfig.Utilities
             }
         }
 
-        //public static void InsertEventDetails(string eventCSVFile)
-        //{
-        //    CsvReader raceDataCSV = null;
-        //    var eventData = ConfigurationManager.AppSettings[eventCSVFile];
-        //    try
-        //    {
-        //        raceDataCSV = new CsvReader(File.OpenText(eventData));
-        //        raceDataCSV.Configuration.SkipEmptyRecords = true;
 
-        //        switch (eventCSVFile)
-        //        {
-        //            case "rider_data":
-        //                InsertRiders(raceDataCSV);
-        //                break;
-        //            case "race_data":
-        //                InsertRaces(raceDataCSV);
-        //                break;
-        //            default:
-        //                break;
-        //        }
-        //    }
-        //    catch (DirectoryNotFoundException e)
-        //    {
-        //        Console.WriteLine($"Unable to locate: {eventData}");
-        //        Console.ReadLine();
-        //    }
-        //}
-
-        //public static void UpdateEventDetails(string eventCSVFile)
-        //{
-        //    CsvReader raceDataCSV = null;
-        //    var eventData = ConfigurationManager.AppSettings[eventCSVFile];
-        //    try
-        //    {
-        //        raceDataCSV = new CsvReader(File.OpenText(eventData));
-        //        raceDataCSV.Configuration.SkipEmptyRecords = true;
-
-        //        switch (eventCSVFile)
-        //        {
-        //            case "rider_data":
-        //                InsertRiders(raceDataCSV);
-        //                break;
-        //            case "race_data":
-        //                InsertRaces(raceDataCSV);
-        //                break;
-        //            default:
-        //                break;
-        //        }
-        //    }
-        //    catch (DirectoryNotFoundException e)
-        //    {
-        //        Console.WriteLine($"Unable to locate: {eventData}");
-        //        Console.ReadLine();
-        //    }
-        //}
-
-        private static void UpdateEvent(IEnumerable<IEventData> details, Func<IEventData, bool> method)
+        private static void UpdateEvent(IEnumerable<ICSVEventData> details, Func<ICSVEventData, bool> insertMethod)
         {
             foreach (var detail in details)
             {
-                method(detail);
+                insertMethod(detail);
             }
         }
-
-        private static void InsertRiders(CsvReader csv)
-        {
-            var details = csv.GetRecords<RiderDataCSV>();
-            foreach (var detail in details)
-            {
-                InsertRider(detail);
-            }
-        }
-
-        private static void InsertRaces(CsvReader csv)
-        {
-            var details = csv.GetRecords<RaceDataCSV>();
-            foreach (var detail in details)
-            {
-                InsertRace(detail);
-            }
-        }
-
-        //public static void ReadInsertRiderDetails()
-        //{
-        //    CsvReader raceDataCSV = null;
-        //    var riderdata = ConfigurationManager.AppSettings["rider_data"];
-        //    try
-        //    {
-        //        raceDataCSV = new CsvReader(File.OpenText(riderdata));
-        //        raceDataCSV.Configuration.SkipEmptyRecords = true;
-        //        var details = raceDataCSV.GetRecords<RiderDataCSV>();
-
-        //        foreach (var detail in details)
-        //        {
-        //            InsertRider(detail);
-        //        }
-        //    }
-        //    catch (DirectoryNotFoundException e)
-        //    {
-        //        Console.WriteLine($"Unable to locate: {riderdata}");
-        //        Console.ReadLine();
-        //    }
-        //}
-
-        //public static void ReadInsertRaceDetails()
-        //{
-        //    CsvReader raceDataCSV = null;
-        //    var riderdata = ConfigurationManager.AppSettings["race_data"];
-        //    try
-        //    {
-        //        raceDataCSV = new CsvReader(File.OpenText(riderdata));
-        //        raceDataCSV.Configuration.SkipEmptyRecords = true;
-        //        var details = raceDataCSV.GetRecords<RaceDataCSV>();
-
-        //        foreach (var detail in details)
-        //        {
-        //            InsertRace(detail);
-        //        }
-        //    }
-        //    catch (DirectoryNotFoundException e)
-        //    {
-        //        Console.WriteLine($"Unable to locate: {riderdata}");
-        //        Console.ReadLine();
-        //    }
-        //}
 
         public static void SelectRiderDetailsRows(C.SqlConnection connection)
         {

@@ -82,7 +82,8 @@
   <ItemGroup>
     <Compile Include="BlobProperties.cs" />
     <Compile Include="BlobUtils.cs" />
-    <Compile Include="IEventData.cs" />
+    <Compile Include="ICSVEventData.cs" />
+    <Compile Include="JsonGPXUtils.cs" />
     <Compile Include="RaceDataCSV.cs" />
     <Compile Include="LineCourseCoordinate.cs" />
     <Compile Include="CourseDataCSV.cs" />
