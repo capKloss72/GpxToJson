@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -10,33 +11,104 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
+using Trackerconfig.Json;
+using Trackerconfig.Props;
+using Trackerconfig.Utilities;
+using System;  // C# , ADO.NET
+using C = System.Data.SqlClient; // System.Data.dll
+using D = System.Data;
+using Trackervonfig.Props;
+using Trackervonfig.Utilities;
 
-namespace GpxToJson
+namespace Trackerconfig
 {
     class Program
     {
 
-        private static CsvReader courseDataCSV = new CsvReader(File.OpenText(ConfigurationManager.AppSettings["course_data"]));
-        private static CsvReader raceDataCSV = new CsvReader(File.OpenText(ConfigurationManager.AppSettings["race_data"]));
+        private static string APPOPTIONS = ConfigurationManager.AppSettings["appcoptions"];
 
         static void Main(string[] args)
         {
 
-            var details = courseDataCSV.GetRecords<CourseDataCSV>();
+            //TomrUtils.InsertEventDetails("rider_data");
 
-            CourseInfo courseInfo = null;
+            TomrUtils.InsertEventDetails2("race_data");
 
-            foreach (var detail in details)
-            {
-                Console.WriteLine($"GPX Location: {detail.GPXLocation} Output Json Location: {detail.OutputJsonLocation} Race ID: {detail.RaceId}");
-                courseInfo = GenerateCourseInfo(detail);
-                SerializeJson(courseInfo, detail.RaceId);
-            }
+            //switch (APPOPTIONS)
+            //{
+            //    case "gpxconvert":
+            //        MigrateToJson(false);
+            //        break;
+            //    case "gpxconvertandupladblob":
+            //        MigrateToJson(true);
+            //        break;
+            //    case "upladblob":
+            //        UploadJson();
+            //        break;
+            //    default:
+            //        Console.WriteLine("No applications options selected, please update App.config");
+            //        break;
+            //}
 
             Console.ReadLine();
-
         }
 
+        private static void MigrateToJson(bool upload)
+        {
+            CsvReader courseDataCSV = null;
+            var coursedata = ConfigurationManager.AppSettings["course_data"];
+            try
+            {
+                courseDataCSV = new CsvReader(File.OpenText(coursedata));
+                var details = courseDataCSV.GetRecords<CourseDataCSV>();
+
+                CourseInfo courseInfo = null;
+
+                foreach (var detail in details)
+                {
+                    courseInfo = GenerateCourseInfo(detail);
+                    if (upload)
+                    {
+                        using (MemoryStream jsonStream = new MemoryStream(System.Text.Encoding.ASCII.GetBytes(SerializeJson(courseInfo, detail.OutputJsonLocation))))
+                        {
+                            BlobUtils.UploadRaceBlob(ConfigurationManager.AppSettings["BlobContainerName"], jsonStream, detail.RaceId);
+                        }
+                    } else
+                    {
+                        SerializeAndWriteJson(courseInfo, detail.OutputJsonLocation);
+                    }
+                }
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                Console.WriteLine($"Unable to locate: {coursedata}");
+                Console.ReadLine();
+            }
+        }
+
+        private static void UploadJson()
+        {
+            CsvReader courseDataCSV = null;
+            var coursedata = ConfigurationManager.AppSettings["course_data"];
+            try
+            {
+                courseDataCSV = new CsvReader(File.OpenText(coursedata));
+                var details = courseDataCSV.GetRecords<CourseDataCSV>();
+
+                foreach (var detail in details)
+                {
+                    using (FileStream courseJason = File.Create(@detail.OutputJsonLocation))
+                    {
+                        BlobUtils.UploadRaceBlob(ConfigurationManager.AppSettings["BlobContainerName"], courseJason, detail.RaceId);
+                    }
+                }
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                Console.WriteLine($"Unable to locate: {coursedata}");
+                Console.ReadLine();
+            }
+        }
 
         private static CourseInfo GenerateCourseInfo(CourseDataCSV courseDataCSV)
         {
@@ -57,6 +129,8 @@ namespace GpxToJson
             features[2] = AddFirstLastLineFeature(endLineProperty, courseDataCSV);
 
             courseInfo.features = features;
+
+            Console.WriteLine($"Course Info generated successfully: {courseDataCSV.RaceId}");
 
             return courseInfo;
         }
@@ -83,27 +157,27 @@ namespace GpxToJson
             return coordPairs;
         }
 
-        private static List<LineCourseCoordinate> ExtractEdgeCoordinates(Properties property)
-        {
-            List<LineCourseCoordinate> edgeLineCoordinates = new List<LineCourseCoordinate>();
+        //private static List<LineCourseCoordinate> ExtractEdgeCoordinates(Properties property)
+        //{
+        //    List<LineCourseCoordinate> edgeLineCoordinates = new List<LineCourseCoordinate>();
 
-            var details = courseDataCSV.GetRecords<CourseDataCSV>();
-            foreach (var detail in details)
-            {
-                if (property.startline)
-                {
-                    edgeLineCoordinates.Add(new LineCourseCoordinate(detail.StartLatRight, detail.StartLonRight));
-                    edgeLineCoordinates.Add(new LineCourseCoordinate(detail.StartLonRight, detail.StartLonLeft));
-                }
-                else if (property.finishline)
-                {
-                    edgeLineCoordinates.Add(new LineCourseCoordinate(detail.FinishLatRight, detail.FinishLonRight));
-                    edgeLineCoordinates.Add(new LineCourseCoordinate(detail.FinishLonRight, detail.FinishLonLeft));
-                }
-            }
+        //    var details = courseDataCSV.GetRecords<CourseDataCSV>();
+        //    foreach (var detail in details)
+        //    {
+        //        if (property.startline)
+        //        {
+        //            edgeLineCoordinates.Add(new LineCourseCoordinate(detail.StartLatRight, detail.StartLonRight));
+        //            edgeLineCoordinates.Add(new LineCourseCoordinate(detail.StartLonRight, detail.StartLonLeft));
+        //        }
+        //        else if (property.finishline)
+        //        {
+        //            edgeLineCoordinates.Add(new LineCourseCoordinate(detail.FinishLatRight, detail.FinishLonRight));
+        //            edgeLineCoordinates.Add(new LineCourseCoordinate(detail.FinishLonRight, detail.FinishLonLeft));
+        //        }
+        //    }
 
-            return edgeLineCoordinates;
-        }
+        //    return edgeLineCoordinates;
+        //}
 
         private static Feature AddCourseLineFeature(Properties properties, List<LineCourseCoordinate> coordPairs)
         {
@@ -160,12 +234,19 @@ namespace GpxToJson
             return feature;
         }
 
-        private static void SerializeJson(CourseInfo courseInfo, string raceid)
+        private static void SerializeAndWriteJson(CourseInfo courseInfo, string raceid)
         {
             string CourseInfoJson = JsonConvert.SerializeObject(courseInfo, Newtonsoft.Json.Formatting.Indented,
                 new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
             File.WriteAllText(raceid, CourseInfoJson);
-            //Console.WriteLine(CourseInfoJson);
+        }
+
+        private static string SerializeJson(CourseInfo courseInfo, string raceid)
+        {
+            string CourseInfoJson = JsonConvert.SerializeObject(courseInfo, Newtonsoft.Json.Formatting.Indented,
+                new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
+            Console.WriteLine($"Serialization successful: {raceid}");
+            return CourseInfoJson;
         }
     }
 

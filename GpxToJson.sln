@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GpxToJson", "GpxToJson\GpxToJson.csproj", "{E53AE47C-296B-4CE2-8521-15AACB3D6117}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackerConfig", "GpxToJson\TrackerConfig.csproj", "{E53AE47C-296B-4CE2-8521-15AACB3D6117}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

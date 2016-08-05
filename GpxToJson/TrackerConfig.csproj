@@ -7,8 +7,8 @@
     <ProjectGuid>{E53AE47C-296B-4CE2-8521-15AACB3D6117}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GpxToJson</RootNamespace>
-    <AssemblyName>GpxToJson</AssemblyName>
+    <RootNamespace>Trackervonfig</RootNamespace>
+    <AssemblyName>Trackerconfig</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -80,8 +80,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlobProperties.cs" />
     <Compile Include="BlobUtils.cs" />
-    <Compile Include="EdgeCourseCoordinates.cs" />
+    <Compile Include="IEventData.cs" />
+    <Compile Include="RaceDataCSV.cs" />
     <Compile Include="LineCourseCoordinate.cs" />
     <Compile Include="CourseDataCSV.cs" />
     <Compile Include="CourseInfo.cs" />
@@ -90,9 +92,13 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RiderDataCSV.cs" />
+    <Compile Include="TomrUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

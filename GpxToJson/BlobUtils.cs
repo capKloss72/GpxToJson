@@ -8,11 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GpxToJson
+namespace Trackerconfig.Utilities
 {
     class BlobUtils
     {
-        public CloudBlobContainer GetBlobContainer(string containerName)
+        public static CloudBlobContainer GetBlobContainer(string containerName)
         {
             // Parse the connection string and return a reference to the storage account.
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
@@ -31,10 +31,14 @@ namespace GpxToJson
             return container;
         }
 
-        public void UploadRaceBlob(CloudBlobContainer container, IEnumerable<FileStream> courseFiles)
+        public static void UploadRaceBlob(string containerName, IEnumerable<FileStream> courseFiles)
         {
+
+            CloudBlobContainer container = GetBlobContainer(containerName);
+
             // Retrieve reference to the blob
             CloudBlockBlob tomrBlob = null;
+
             foreach (var file in courseFiles)
             {
                 tomrBlob = container.GetBlockBlobReference(Path.GetFileNameWithoutExtension(file.Name));
@@ -42,7 +46,18 @@ namespace GpxToJson
             }
         }
 
-        public void DownloadRaceBlob(CloudBlobContainer container, IEnumerable<FileStream> courseFiles)
+        public static void UploadRaceBlob(string containerName, Stream outputJsonLocation, string raceId)
+        {
+
+            CloudBlobContainer container = GetBlobContainer(containerName);
+
+            // Retrieve reference to the blob
+            CloudBlockBlob tomrBlob = container.GetBlockBlobReference(raceId);
+            tomrBlob.UploadFromStream(outputJsonLocation);
+            Console.WriteLine($"Uploading to blob storage successful: {raceId}");
+        }
+
+        public static void DownloadRaceBlob(CloudBlobContainer container, IEnumerable<FileStream> courseFiles)
         {
             // Retrieve reference to the blob
             CloudBlockBlob tomrBlob = null;
