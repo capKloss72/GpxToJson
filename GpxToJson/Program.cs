@@ -32,7 +32,9 @@ namespace Trackerconfig
 
             //TomrUtils.InsertEventDetails("rider_data");
 
-            TomrUtils.InsertEventDetails2("race_data");
+            TomrUtils.UpdateEventDetails("rider_data", true);
+            Console.WriteLine("Inserted");
+            Console.ReadLine();
 
             //switch (APPOPTIONS)
             //{
