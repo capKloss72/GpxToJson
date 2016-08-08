@@ -32,25 +32,50 @@ namespace Trackerconfig
 
             //TomrUtils.InsertEventDetails("rider_data");
 
-            TomrUtils.UpdateEventDetails("rider_data", true);
-            Console.WriteLine("Inserted");
-            Console.ReadLine();
+            //TomrUtils.UpdateEventDetails("rider_data", true);
+            //Console.WriteLine("Inserted");
+            //Console.ReadLine();
 
-            //switch (APPOPTIONS)
-            //{
-            //    case "gpxconvert":
-            //        MigrateToJson(false);
-            //        break;
-            //    case "gpxconvertandupladblob":
-            //        MigrateToJson(true);
-            //        break;
-            //    case "upladblob":
-            //        UploadJson();
-            //        break;
-            //    default:
-            //        Console.WriteLine("No applications options selected, please update App.config");
-            //        break;
-            //}
+            switch (APPOPTIONS)
+            {
+                case "generateevent":
+                    JsonGPXUtils.MigrateToJson(true);
+                    TomrUtils.UpdateEventDetails(ConfigurationManager.AppSettings["race_data"], true);
+                    TomrUtils.UpdateEventDetails(ConfigurationManager.AppSettings["rider_data"], true);
+                    break;
+                case "gpxconvert":
+                    JsonGPXUtils.MigrateToJson(false);
+                    break;
+                case "gpxconvertandupladblob":
+                    JsonGPXUtils.MigrateToJson(true);
+                    break;
+                case "upladblob":
+                    JsonGPXUtils.UploadJson();
+                    break;
+                case "eventsetup":
+                    TomrUtils.UpdateEventDetails(ConfigurationManager.AppSettings["race_data"], true);
+                    TomrUtils.UpdateEventDetails(ConfigurationManager.AppSettings["rider_data"], true);
+                    break;
+                case "racesetup":
+                    TomrUtils.UpdateEventDetails(ConfigurationManager.AppSettings["race_data"], true);
+                    break;
+                case "ridersetup":
+                    TomrUtils.UpdateEventDetails(ConfigurationManager.AppSettings["rider_data"], true);
+                    break;
+                case "eventupdate":
+                    TomrUtils.UpdateEventDetails(ConfigurationManager.AppSettings["race_data"], false);
+                    TomrUtils.UpdateEventDetails(ConfigurationManager.AppSettings["rider_data"], false);
+                    break;
+                case "raceupdate":
+                    TomrUtils.UpdateEventDetails(ConfigurationManager.AppSettings["race_data"], false);
+                    break;
+                case "riderupdate":
+                    TomrUtils.UpdateEventDetails(ConfigurationManager.AppSettings["rider_data"], false);
+                    break;
+                default:
+                    Console.WriteLine("No applications options selected, please update App.config");
+                    break;
+            }
 
             Console.ReadLine();
         }

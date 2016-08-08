@@ -16,7 +16,7 @@ namespace Trackervonfig.Utilities
 {
     class JsonGPXUtils
     {
-        private static void MigrateToJson(bool upload)
+        public static void MigrateToJson(bool upload)
         {
             CsvReader courseDataCSV = null;
             var coursedata = ConfigurationManager.AppSettings["course_data"];
@@ -50,7 +50,7 @@ namespace Trackervonfig.Utilities
             }
         }
 
-        private static void UploadJson()
+        public static void UploadJson()
         {
             CsvReader courseDataCSV = null;
             var coursedata = ConfigurationManager.AppSettings["course_data"];
