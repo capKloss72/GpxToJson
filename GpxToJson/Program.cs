@@ -24,7 +24,7 @@ namespace Trackerconfig
 {
     class Program
     {
-
+        //Application options
         private static string APPOPTIONS = ConfigurationManager.AppSettings["appcoptions"];
 
         static void Main(string[] args)
