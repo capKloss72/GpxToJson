@@ -3,6 +3,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,9 +15,14 @@ namespace Trackerconfig.Utilities
     {
         public static CloudBlobContainer GetBlobContainer(string containerName)
         {
+
+            var connection = ConfigurationManager.ConnectionStrings["StorageConnectionString"].ConnectionString;
+
             // Parse the connection string and return a reference to the storage account.
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
-                CloudConfigurationManager.GetSetting("StorageConnectionString"));
+            //CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+            //    CloudConfigurationManager.GetSetting("StorageConnectionString"));
+
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connection);
 
             //Create the Blob service client
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
